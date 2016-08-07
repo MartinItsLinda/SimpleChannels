@@ -17,6 +17,7 @@
 
 package me.martinitslinda.simplechannels.reqest;
 
+import com.google.common.base.Preconditions;
 import me.martinitslinda.simplechannels.channel.Channel;
 import org.bukkit.entity.Player;
 
@@ -32,6 +33,7 @@ public class RequestManager{
     }
 
     public static Request getPendingRequest(Player target){
+        Preconditions.checkNotNull(target, "target");
         if(hasPendingRequest(target)){
             for(Request request : getRequests()){
                 if(!(request.getTarget().equals(target.getName()))){
@@ -44,6 +46,7 @@ public class RequestManager{
     }
 
     public static boolean hasPendingRequest(Player target){
+        Preconditions.checkNotNull(target, "target");
         for(Request request : getRequests()){
             if(!(request.getTarget().equals(target.getName()))){
                 continue;
@@ -60,31 +63,30 @@ public class RequestManager{
     }
 
     public static Request.Result hasPendingRequestFrom(Channel sender, Player target){
+        Preconditions.checkNotNull(sender, "channel");
+        Preconditions.checkNotNull(target, "target");
 
         for(Request request : getRequests()){
             if(!(request.getSender().getId()==sender.getId())||
                     !(request.getTarget().equals(target.getName()))){
                 continue;
             }
-
-            if(request.getTime()-System.currentTimeMillis()<=0){
-                requests.remove(request);
-                return Request.Result.TIMED_OUT;
-            }
-
             return Request.Result.FOUND;
         }
-
         return Request.Result.NOT_FOUND;
     }
 
-    public static Request sendRequestTo(Channel sender, Player target){
-        if(hasPendingRequest(target)){
-            return getPendingRequest(target);
+    public static Request.Result sendRequestTo(Channel sender, Player target){
+        if(hasPendingRequest(Preconditions.checkNotNull(target, "target"))){
+            return Request.Result.PLAYER_ALREADY_HAS_PENDING_REQUEST;
         }
-        Request request=new Request(sender, target.getName());
-        requests.add(request);
-        return request;
+        requests.add(new Request(Preconditions.checkNotNull(sender, "channel"), target.getName()));
+        return Request.Result.SUCCESS;
+    }
+
+    public static boolean terminate(Request request){
+        Preconditions.checkNotNull(request, "request");
+        return requests.remove(request);
     }
 
 }

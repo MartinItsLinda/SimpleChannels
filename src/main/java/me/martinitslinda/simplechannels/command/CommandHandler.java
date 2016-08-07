@@ -17,6 +17,8 @@
 
 package me.martinitslinda.simplechannels.command;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import me.martinitslinda.simplechannels.SimpleChannels;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,7 +33,7 @@ public class CommandHandler{
     private static Set<Command> commands=new HashSet<>();
 
     public static Set<Command> getCommands(){
-        return commands;
+        return ImmutableSet.copyOf(commands);
     }
 
     public static Command getCommand(String name){
@@ -46,7 +48,7 @@ public class CommandHandler{
     public static boolean handle(CommandSender sender, String[] args){
 
         if(!(sender instanceof Player)){
-            sender.sendMessage(SimpleChannels.PREFIX+"&cThis command cannot be performed by the console.");
+            sender.sendMessage(SimpleChannels.PREFIX+"§cThis command cannot be performed by the console.");
             return true;
         }
 
@@ -60,9 +62,9 @@ public class CommandHandler{
         Command command=getCommand(args[0]);
 
         if(command==null){
-            player.sendMessage(translateAlternateColorCodes('&', SimpleChannels.PREFIX+"&cUnknown command &4(&c" + args[0] + "&4)&c."));
+            player.sendMessage(SimpleChannels.PREFIX+"§cUnknown command "+args[0]+".");
         }else if(!(player.hasPermission(command.getPermission()))){
-            player.sendMessage(translateAlternateColorCodes('&', SimpleChannels.PREFIX+"&cYou don't have permission to perform that action."));
+            player.sendMessage(SimpleChannels.PREFIX+"§cYou don't have permission to perform that action.");
         }else{
 
             String[] newArgs=new String[args.length-1];
@@ -73,16 +75,35 @@ public class CommandHandler{
         return true;
     }
 
+    public static void register(Command command){
+        Preconditions.checkNotNull(command, "command");
+        Preconditions.checkArgument(getCommand(command.getName())!=null, "Cannot register an already registered command.");
+        commands.add(command);
+    }
+
+    public static void unregister(Command command){
+        Preconditions.checkNotNull(command, "command");
+        Preconditions.checkArgument(getCommand(command.getName())==null, "Cannot unregister an unregistered command.");
+        commands.remove(command);
+    }
+
     public static void showHelp(Player player){
 
-        player.sendMessage(translateAlternateColorCodes('&', "&8[&7======== &cSimpleChannels v"+SimpleChannels.get().getDescription().getVersion()+" Help =======&8]"));
+        player.sendMessage("§8[§7======== §cSimpleChannels v"+SimpleChannels.get().getDescription().getVersion()+" Help §7=======&8]");
 
         for(Command command : getCommands()){
             if(player.hasPermission(command.getPermission())){
-                String message="&7/sch "+command.getName()+
-                        " "+command.getUsage()+" - "+command.getDescription();
+                StringBuilder message=new StringBuilder();
 
-                player.sendMessage(translateAlternateColorCodes('&', message));
+                message.append("§7/sch ").append(command.getName());
+                if(command.getUsage()!=null){
+                    message.append(" ").append(command.getUsage());
+                }
+                if(command.getDescription()!=null){
+                    message.append(" §8-§7 ").append(command.getDescription());
+                }
+
+                player.sendMessage(translateAlternateColorCodes('&', message.toString()));
             }
         }
 

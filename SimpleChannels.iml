@@ -24,5 +24,6 @@
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:2.4.6" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.16" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-jdk14:1.7.21" level="project" />
+    <orderEntry type="library" name="Maven: mkremins:fanciful:0.3.3-SNAPSHOT" level="project" />
   </component>
 </module>

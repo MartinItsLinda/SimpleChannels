@@ -15,38 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.reqest;
+package me.martinitslinda.simplechannels.command;
 
-import me.martinitslinda.simplechannels.channel.Channel;
+import me.martinitslinda.simplechannels.reqest.Request;
+import me.martinitslinda.simplechannels.reqest.RequestManager;
+import org.bukkit.entity.Player;
 
-public class Request{
+public class AcceptCommand extends Command{
 
-    private Channel sender;
-    private String target;
-    private long time;
-
-    public Request(Channel sender, String target){
-        this.sender=sender;
-        this.target=target;
-        this.time=System.currentTimeMillis()+10000;
+    public AcceptCommand(){
+        super("accept", "simplechannels.command.accept", null, "Accept a pending invite request.");
     }
 
-    public Channel getSender(){
-        return sender;
+    @Override
+    public void execute(Player sender, String[] args){
+
+        Request request=RequestManager.getPendingRequest(sender);
+        if(request==null){
+            error(sender, "You don't have any pending requests.");
+            return;
+        }
+        RequestManager.terminate(request);
     }
-
-    public String getTarget(){
-        return target;
-    }
-
-    public long getTime(){
-        return time;
-    }
-
-    public enum Result{
-
-        SUCCESS, PLAYER_ALREADY_HAS_PENDING_REQUEST, TIMED_OUT, FOUND, NOT_FOUND
-
-    }
-
 }

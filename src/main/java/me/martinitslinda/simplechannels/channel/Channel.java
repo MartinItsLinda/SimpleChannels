@@ -69,14 +69,14 @@ public class Channel{
     }
 
     public Permission getJoinPermission(){
-        return isRequiresPermission() ? new Permission("simplechannels.join."+getName()) : null;
+        return isRequiresJoinPermission() ? new Permission("simplechannels.join."+getName()) : null;
     }
 
-    public boolean isRequiresPermission(){
+    public boolean isRequiresJoinPermission(){
         return requiresPermission;
     }
 
-    public void setRequiresPermission(boolean requiresPermission){
+    public void setRequiresJoinPermission(boolean requiresPermission){
         this.requiresPermission=requiresPermission;
     }
 
@@ -178,9 +178,9 @@ public class Channel{
 
     @Override
     public String toString(){
-        return String.format("{name=%s,requiresPermission=%s,joinPermission=%s,"+
+        return String.format("{name=%s,requiresJoinPermission=%s,joinPermission=%s,"+
                         "requiresInvite=%s,members=%s}",
-                getName(), isRequiresPermission(), getJoinPermission(),
+                getName(), isRequiresJoinPermission(), getJoinPermission(),
                 isRequiresInvite(), Util.getUuidsToNames(new ArrayList<>(getMembers())));
     }
 

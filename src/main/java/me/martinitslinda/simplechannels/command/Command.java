@@ -36,6 +36,7 @@ public abstract class Command{
         this.usage=usage;
         this.description=description;
         this.plugin=SimpleChannels.get();
+        CommandHandler.register(this);
     }
 
     public String getName(){
@@ -58,9 +59,10 @@ public abstract class Command{
         StringBuilder builder=new StringBuilder();
 
         builder.append(SimpleChannels.PREFIX).append("&cCorrect Usage: &7/sch ")
-                .append(getName())
-                .append(" ")
-                .append(getUsage());
+                .append(getName());
+        if(getUsage()!=null){
+            builder.append(" ").append(getUsage());
+        }
         if(getDescription()!=null)
             builder.append(" &8-&7 ").append(getDescription());
 
@@ -73,6 +75,14 @@ public abstract class Command{
 
     public void error(Player sender, String message){
         sender.sendMessage(SimpleChannels.PREFIX+"§c"+message);
+    }
+
+    public void register(){
+        CommandHandler.register(this);
+    }
+
+    public void unregister(){
+        CommandHandler.unregister(this);
     }
 
     public abstract void execute(Player sender, String[] args);

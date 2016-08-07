@@ -40,7 +40,7 @@ public class JoinCommand extends Command{
         Channel channel=ChannelManager.getChannel(args[0]);
 
         if(channel==null){
-            error(sender, "Channel not found ("+args[0]+").");
+            error(sender, "Channel not found "+args[0]+".");
             return;
         }
 
@@ -51,7 +51,7 @@ public class JoinCommand extends Command{
             }else if(result==Request.Result.NOT_FOUND){
                 error(sender, "You don't have any pending requests from "+channel.getName());
             }else{
-                channel.add(sender);
+                //TODO: Add them to the list of members.
                 channel.broadcast("§a"+sender.getName()+" has joined.");
             }
             return;
