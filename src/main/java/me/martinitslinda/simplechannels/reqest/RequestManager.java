@@ -22,6 +22,7 @@ import me.martinitslinda.simplechannels.channel.Channel;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class RequestManager{
@@ -34,26 +35,30 @@ public class RequestManager{
 
     public static Request getPendingRequest(Player target){
         Preconditions.checkNotNull(target, "target");
-        if(hasPendingRequest(target)){
-            for(Request request : getRequests()){
-                if(!(request.getTarget().equals(target.getName()))){
-                    continue;
-                }
-                return request;
+        for(Iterator<Request> it=requests.iterator(); it.hasNext(); ){
+            Request request=it.next();
+            if(!(request.getTarget().equals(target.getName()))){
+                continue;
             }
+            if(request.getTime()-System.currentTimeMillis()<=0){
+                it.remove();
+                return null;
+            }
+            return request;
         }
         return null;
     }
 
     public static boolean hasPendingRequest(Player target){
         Preconditions.checkNotNull(target, "target");
-        for(Request request : getRequests()){
+        for(Iterator<Request> it=requests.iterator(); it.hasNext(); ){
+            Request request=it.next();
             if(!(request.getTarget().equals(target.getName()))){
                 continue;
             }
 
             if(request.getTime()-System.currentTimeMillis()<=0){
-                requests.remove(request);
+                it.remove();
                 return false;
             }
 
@@ -66,11 +71,19 @@ public class RequestManager{
         Preconditions.checkNotNull(sender, "channel");
         Preconditions.checkNotNull(target, "target");
 
-        for(Request request : getRequests()){
+        for(Iterator<Request> it=requests.iterator(); it.hasNext(); ){
+            Request request=it.next();
+
             if(!(request.getSender().getId()==sender.getId())||
                     !(request.getTarget().equals(target.getName()))){
                 continue;
             }
+
+            if(request.getTime()-System.currentTimeMillis()<=0){
+                it.remove();
+                return Request.Result.NOT_FOUND;
+            }
+
             return Request.Result.FOUND;
         }
         return Request.Result.NOT_FOUND;
