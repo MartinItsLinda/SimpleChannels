@@ -15,40 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.event;
+package me.martinitslinda.simplechannels.managers;
 
 import me.martinitslinda.simplechannels.channel.Channel;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import me.martinitslinda.simplechannels.request.Request;
 
-public class ChannelDisbandEvent extends Event{
+import java.util.List;
+import java.util.UUID;
 
-    private static final HandlerList handlers=new HandlerList();
+public interface RequestManager{
 
-    private Channel channel;
-    private Player disbander;
+    List<Request> getRequests();
 
-    public ChannelDisbandEvent(Channel channel, Player disbander){
-        this.channel=channel;
-        this.disbander=disbander;
-    }
+    Request.Result hasRequestTo(Channel sender, UUID recipient);
 
-    public static HandlerList getHandlerList(){
-        return handlers;
-    }
+    Request getRequestFrom(Channel sender, UUID recipient);
 
-    public Channel getChannel(){
-        return channel;
-    }
+    Request getRequestTo(UUID recipient);
 
-    public Player getDisbander(){
-        return disbander;
-    }
+    List<Request> getRequestsFrom(Channel sender);
 
-    @Override
-    public HandlerList getHandlers(){
-        return handlers;
-    }
+    List<Request> getRequestsTo(UUID recipient);
 
 }

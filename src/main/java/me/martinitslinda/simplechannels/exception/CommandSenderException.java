@@ -15,42 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.channel;
+package me.martinitslinda.simplechannels.exception;
 
-import me.martinitslinda.simplechannels.channel.role.Role;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import me.martinitslinda.simplechannels.command.ChannelCommand;
 
-import java.util.Map;
-import java.util.UUID;
+public class CommandSenderException extends CommandException{
 
-public interface Channel{
-
-    String getId();
-
-    String getName();
-
-    UUID getCreator();
-
-    Map<UUID, Role> getMembers();
-
-    String getFormat();
-
-    void setFormat(String format);
-
-    String getBroadcastFormat();
-
-    void setBroadcastFormat(String broadcastFormat);
-
-    String getPermission();
-
-    void sendMessage(CommandSender sender, String message);
-
-    void broadcast(String message);
-
-    void add(Player player);
-
-    void remove(Player player);
-
+    public CommandSenderException(ChannelCommand command, String message){
+        super(command, message);
+    }
 }
-

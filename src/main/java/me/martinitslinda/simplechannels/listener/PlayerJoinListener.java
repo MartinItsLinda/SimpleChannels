@@ -17,12 +17,15 @@
 
 package me.martinitslinda.simplechannels.listener;
 
+import me.martinitslinda.simplechannels.SimpleChannels;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinListener implements Listener{
+
+    private SimpleChannels plugin=SimpleChannels.get();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){

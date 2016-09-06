@@ -15,42 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.channel;
+package me.martinitslinda.simplechannels.managers;
 
-import me.martinitslinda.simplechannels.channel.role.Role;
-import org.bukkit.command.CommandSender;
+import me.martinitslinda.simplechannels.channel.Channel;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.Collection;
 
-public interface Channel{
+public interface ChannelManager{
 
-    String getId();
+    void downloadChannels();
 
-    String getName();
+    Collection<Channel> getChannels();
 
-    UUID getCreator();
+    Collection<Channel> getChannels(Player player);
 
-    Map<UUID, Role> getMembers();
+    Channel getChannelByName(String name);
 
-    String getFormat();
+    Channel getChannelById(String id);
 
-    void setFormat(String format);
+    Channel getActiveChannel(Player player);
 
-    String getBroadcastFormat();
-
-    void setBroadcastFormat(String broadcastFormat);
-
-    String getPermission();
-
-    void sendMessage(CommandSender sender, String message);
-
-    void broadcast(String message);
-
-    void add(Player player);
-
-    void remove(Player player);
+    Channel setActiveChannel(Player player, Channel channel);
 
 }
-

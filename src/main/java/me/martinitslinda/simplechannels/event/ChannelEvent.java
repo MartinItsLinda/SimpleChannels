@@ -15,42 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.channel;
+package me.martinitslinda.simplechannels.event;
 
-import me.martinitslinda.simplechannels.channel.role.Role;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import me.martinitslinda.simplechannels.channel.Channel;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
-import java.util.Map;
-import java.util.UUID;
+public class ChannelEvent extends Event{
 
-public interface Channel{
+    private static final HandlerList handlers=new HandlerList();
 
-    String getId();
+    private Channel channel;
 
-    String getName();
+    public ChannelEvent(Channel channel){
+        this.channel=channel;
+    }
 
-    UUID getCreator();
+    public static HandlerList getHandlerList(){
+        return handlers;
+    }
 
-    Map<UUID, Role> getMembers();
+    public Channel getChannel(){
+        return channel;
+    }
 
-    String getFormat();
-
-    void setFormat(String format);
-
-    String getBroadcastFormat();
-
-    void setBroadcastFormat(String broadcastFormat);
-
-    String getPermission();
-
-    void sendMessage(CommandSender sender, String message);
-
-    void broadcast(String message);
-
-    void add(Player player);
-
-    void remove(Player player);
+    @Override
+    public HandlerList getHandlers(){
+        return handlers;
+    }
 
 }
-

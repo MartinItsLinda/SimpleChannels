@@ -17,25 +17,7 @@
 
 package me.martinitslinda.simplechannels.util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 public class Util{
 
-    public static List<String> getUuidsToNames(List<UUID> uuids){
-        List<String> names=new ArrayList<>();
-        for(UUID uuid : uuids){
-            OfflinePlayer player=Bukkit.getOfflinePlayer(uuid);
-            if(player==null){
-                continue;
-            }
-            names.add(player.getName());
-        }
-        return names;
-    }
 
 }

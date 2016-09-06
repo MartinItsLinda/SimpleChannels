@@ -15,42 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.channel;
+package me.martinitslinda.simplechannels.channel.role;
 
-import me.martinitslinda.simplechannels.channel.role.Role;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+public enum Role{
 
-import java.util.Map;
-import java.util.UUID;
+    USER("channel.chat"),
+    ADMINISTRATOR("channel.chat", "channel.invite", "channel.remove"),
+    CREATOR("channel.chat", "channel.invite", "channel.remove", "channel.promote");
 
-public interface Channel{
+    private String[] permissions;
 
-    String getId();
+    Role(String... permissions){
+        this.permissions=permissions;
+    }
 
-    String getName();
-
-    UUID getCreator();
-
-    Map<UUID, Role> getMembers();
-
-    String getFormat();
-
-    void setFormat(String format);
-
-    String getBroadcastFormat();
-
-    void setBroadcastFormat(String broadcastFormat);
-
-    String getPermission();
-
-    void sendMessage(CommandSender sender, String message);
-
-    void broadcast(String message);
-
-    void add(Player player);
-
-    void remove(Player player);
-
+    public String[] getPermissions(){
+        return permissions;
+    }
 }
-

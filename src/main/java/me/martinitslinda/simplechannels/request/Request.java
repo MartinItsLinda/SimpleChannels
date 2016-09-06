@@ -15,22 +15,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.event;
+package me.martinitslinda.simplechannels.request;
 
 import me.martinitslinda.simplechannels.channel.Channel;
-import org.bukkit.command.CommandSender;
 
-public class ChannelCreateEvent extends ChannelEvent{
+import java.util.UUID;
 
-    private CommandSender creator;
+public class Request{
 
-    public ChannelCreateEvent(Channel channel, CommandSender creator){
-        super(channel);
-        this.creator=creator;
+    private Channel sender;
+    private UUID recipient;
+    private long requestTime;
+
+    public Request(Channel sender, UUID recipient){
+        this.sender=sender;
+        this.recipient=recipient;
+        this.requestTime=System.currentTimeMillis();
     }
 
-    public CommandSender getCreator(){
-        return creator;
+    public Channel getSender(){
+        return sender;
+    }
+
+    public UUID getRecipient(){
+        return recipient;
+    }
+
+    public long getRequestTime(){
+        return requestTime;
+    }
+
+    public boolean hasExpired(){ return getRequestTime()+30000L-System.currentTimeMillis()<=0; }
+
+    public enum Result{
+
+        SUCCESS, FAILURE, PLAYER_HAS_REQUEST, NOT_FOUND, TIMED_OUT, FOUND
+
     }
 
 }

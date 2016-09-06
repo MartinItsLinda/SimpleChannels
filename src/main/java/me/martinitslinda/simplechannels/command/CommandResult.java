@@ -15,38 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.reqest;
+package me.martinitslinda.simplechannels.command;
 
-import me.martinitslinda.simplechannels.channel.Channel;
+public enum CommandResult{
 
-public class Request{
-
-    private Channel sender;
-    private String target;
-    private long time;
-
-    public Request(Channel sender, String target){
-        this.sender=sender;
-        this.target=target;
-        this.time=System.currentTimeMillis()+10000;
-    }
-
-    public Channel getSender(){
-        return sender;
-    }
-
-    public String getTarget(){
-        return target;
-    }
-
-    public long getTime(){
-        return time;
-    }
-
-    public enum Result{
-
-        SUCCESS, PLAYER_ALREADY_HAS_PENDING_REQUEST, TIMED_OUT, FOUND, NOT_FOUND
-
-    }
+    SUCCESS, FAILURE
 
 }

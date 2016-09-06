@@ -15,42 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.channel;
+package me.martinitslinda.simplechannels.event;
 
-import me.martinitslinda.simplechannels.channel.role.Role;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import me.martinitslinda.simplechannels.channel.Channel;
+import org.bukkit.event.Cancellable;
 
-import java.util.Map;
-import java.util.UUID;
+public class ChannelBroadcastEvent extends ChannelEvent implements Cancellable{
 
-public interface Channel{
+    private String message;
+    private boolean isCancelled;
 
-    String getId();
+    public ChannelBroadcastEvent(Channel channel, String message){
+        super(channel);
+    }
 
-    String getName();
+    public String getMessage(){
+        return message;
+    }
 
-    UUID getCreator();
+    @Override
+    public boolean isCancelled(){
+        return isCancelled;
+    }
 
-    Map<UUID, Role> getMembers();
-
-    String getFormat();
-
-    void setFormat(String format);
-
-    String getBroadcastFormat();
-
-    void setBroadcastFormat(String broadcastFormat);
-
-    String getPermission();
-
-    void sendMessage(CommandSender sender, String message);
-
-    void broadcast(String message);
-
-    void add(Player player);
-
-    void remove(Player player);
-
+    @Override
+    public void setCancelled(boolean cancelled){
+        isCancelled=cancelled;
+    }
 }
-

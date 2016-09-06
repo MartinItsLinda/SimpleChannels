@@ -18,62 +18,50 @@
 package me.martinitslinda.simplechannels.event;
 
 import me.martinitslinda.simplechannels.channel.Channel;
-import org.bukkit.entity.Player;
+import me.martinitslinda.simplechannels.channel.role.Role;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
-public class ChannelChatEvent extends Event implements Cancellable{
+public class ChannelChatEvent extends ChannelEvent implements Cancellable{
 
-    private static final HandlerList handlers=new HandlerList();
-    private boolean isCancelled;
-    private Channel channel;
-    private Player sender;
-    private Set<UUID> recipients;
+    private CommandSender sender;
     private String message;
+    private Map<UUID, Role> recipients;
+    private boolean cancelled;
 
-    public ChannelChatEvent(Channel channel, Player sender, Set<UUID> recipients, String message){
-        this.channel=channel;
+    public ChannelChatEvent(Channel channel, CommandSender sender, String message, Map<UUID, Role> recipients){
+        super(channel);
         this.sender=sender;
-        this.recipients=recipients;
         this.message=message;
+        this.recipients=recipients;
     }
 
-    public static HandlerList getHandlerList(){
-        return handlers;
-    }
-
-    public Channel getChannel(){
-        return channel;
-    }
-
-    public Player getSender(){
+    public CommandSender getSender(){
         return sender;
-    }
-
-    public Set<UUID> getRecipients(){
-        return recipients;
     }
 
     public String getMessage(){
         return message;
     }
 
-    @Override
-    public HandlerList getHandlers(){
-        return handlers;
+    public void setMessage(String message){
+        this.message=message;
+    }
+
+    public Map<UUID, Role> getRecipients(){
+        return recipients;
     }
 
     @Override
     public boolean isCancelled(){
-        return isCancelled;
+        return cancelled;
     }
 
     @Override
-    public void setCancelled(boolean isCancelled){
-        this.isCancelled=isCancelled;
+    public void setCancelled(boolean cancelled){
+        this.cancelled=cancelled;
     }
 }

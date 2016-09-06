@@ -15,26 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.command;
+package me.martinitslinda.simplechannels.exception;
 
-import me.martinitslinda.simplechannels.reqest.Request;
-import me.martinitslinda.simplechannels.reqest.RequestManager;
-import org.bukkit.entity.Player;
+import me.martinitslinda.simplechannels.command.ChannelCommand;
 
-public class AcceptCommand extends Command{
+public class CommandException extends Exception{
 
-    public AcceptCommand(){
-        super("accept", "simplechannels.command.accept", null, "Accept a pending invite request.");
+    private ChannelCommand command;
+    private String message;
+
+    public CommandException(ChannelCommand command, String message){
+        this.command=command;
+        this.message=message;
+    }
+
+    public ChannelCommand getCommand(){
+        return command;
     }
 
     @Override
-    public void execute(Player sender, String[] args){
-
-        Request request=RequestManager.getPendingRequest(sender);
-        if(request==null){
-            error(sender, "You don't have any pending requests.");
-            return;
-        }
-        RequestManager.terminate(request);
+    public String getMessage(){
+        return message;
     }
 }

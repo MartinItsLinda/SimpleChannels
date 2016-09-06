@@ -18,18 +18,19 @@
 package me.martinitslinda.simplechannels;
 
 import com.zaxxer.hikari.HikariDataSource;
-import me.martinitslinda.simplechannels.command.CommandHandler;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import me.martinitslinda.simplechannels.command.CommandManager;
+import me.martinitslinda.simplechannels.managers.*;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class SimpleChannels extends JavaPlugin{
 
-    public static final String PREFIX="§7SimpleChannels >> §f";
+    public static final String PREFIX="§7[§dSimpleChannels§7]";
     private static SimpleChannels instance;
+
+    private ChannelManager channelManager;
+    private UserManager playerManager;
+    private RequestManager requestManager;
+    private CommandManager commandManager;
 
     private HikariDataSource source;
 
@@ -41,33 +42,42 @@ public class SimpleChannels extends JavaPlugin{
     public void onLoad(){
 
 
+
     }
 
     @Override
     public void onEnable(){
 
 
+
     }
 
-    public Connection getConnection() throws SQLException{
 
-        if(source!=null&&!source.isClosed()){
-            return source.getConnection();
+    public ChannelManager getChannelManager(){
+        if(channelManager==null){
+            channelManager=new SimpleChannelManager();
         }
-
-        source=new HikariDataSource();
-        source.setJdbcUrl("jdbc:mysql://"+getConfig().getString("mysql.host")+
-                ":"+getConfig().getInt("mysql.port")+"/"+getConfig().getString("mysql.database"));
-        source.setUsername(getConfig().getString("mysql.username"));
-        source.setPassword(getConfig().getString("mysql.password"));
-        source.setMaximumPoolSize(15);
-        source.setLeakDetectionThreshold(5000);
-
-        return source.getConnection();
+        return channelManager;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
-        return command.getName().equalsIgnoreCase("simplechannels")&&CommandHandler.handle(sender, args);
+    public UserManager getPlayerManager(){
+        if(playerManager==null){
+            playerManager=new SimplePlayerManager();
+        }
+        return playerManager;
+    }
+
+    public RequestManager getRequestManager(){
+        if(requestManager==null){
+            requestManager=new SimpleRequestManager();
+        }
+        return requestManager;
+    }
+
+    public CommandManager getCommandManager(){
+        if(commandManager==null){
+            commandManager=new CommandManager();
+        }
+        return commandManager;
     }
 }
