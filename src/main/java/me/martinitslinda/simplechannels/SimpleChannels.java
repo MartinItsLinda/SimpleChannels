@@ -31,6 +31,7 @@ public class SimpleChannels extends JavaPlugin{
     private static SimpleChannels instance;
 
     private ChannelManager channelManager;
+    private UserManager playerManager;
     private RequestManager requestManager;
     private CommandManager commandManager;
 
@@ -60,6 +61,13 @@ public class SimpleChannels extends JavaPlugin{
             channelManager=new SimpleChannelManager();
         }
         return channelManager;
+    }
+
+    public UserManager getPlayerManager(){
+        if(playerManager==null){
+            playerManager=new SimplePlayerManager();
+        }
+        return playerManager;
     }
 
     public RequestManager getRequestManager(){
