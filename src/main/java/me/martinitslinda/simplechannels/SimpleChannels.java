@@ -19,7 +19,10 @@ package me.martinitslinda.simplechannels;
 
 import com.zaxxer.hikari.HikariDataSource;
 import me.martinitslinda.simplechannels.command.CommandManager;
-import me.martinitslinda.simplechannels.managers.*;
+import me.martinitslinda.simplechannels.managers.ChannelManager;
+import me.martinitslinda.simplechannels.managers.RequestManager;
+import me.martinitslinda.simplechannels.managers.SimpleChannelManager;
+import me.martinitslinda.simplechannels.managers.SimpleRequestManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SimpleChannels extends JavaPlugin{
@@ -28,7 +31,6 @@ public class SimpleChannels extends JavaPlugin{
     private static SimpleChannels instance;
 
     private ChannelManager channelManager;
-    private UserManager playerManager;
     private RequestManager requestManager;
     private CommandManager commandManager;
 
@@ -58,13 +60,6 @@ public class SimpleChannels extends JavaPlugin{
             channelManager=new SimpleChannelManager();
         }
         return channelManager;
-    }
-
-    public UserManager getPlayerManager(){
-        if(playerManager==null){
-            playerManager=new SimplePlayerManager();
-        }
-        return playerManager;
     }
 
     public RequestManager getRequestManager(){
