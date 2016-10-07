@@ -19,9 +19,22 @@ package me.martinitslinda.simplechannels.exception;
 
 import me.martinitslinda.simplechannels.command.ChannelCommand;
 
-public class CommandSenderException extends CommandException{
+public class CommandSenderException extends Exception{
+
+    private ChannelCommand command;
+    private String message;
 
     public CommandSenderException(ChannelCommand command, String message){
-        super(command, message);
+        this.command=command;
+        this.message=message;
+    }
+
+    public ChannelCommand getCommand(){
+        return command;
+    }
+
+    @Override
+    public String getMessage(){
+        return message;
     }
 }

@@ -18,7 +18,7 @@
 package me.martinitslinda.simplechannels.event;
 
 import me.martinitslinda.simplechannels.channel.Channel;
-import me.martinitslinda.simplechannels.channel.role.Role;
+import me.martinitslinda.simplechannels.channel.Role;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 

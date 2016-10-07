@@ -15,11 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.command;
+package me.martinitslinda.simplechannels.managers;
 
 import com.google.common.base.Preconditions;
 import me.martinitslinda.simplechannels.SimpleChannels;
-import me.martinitslinda.simplechannels.exception.*;
+import me.martinitslinda.simplechannels.command.ChannelCommand;
+import me.martinitslinda.simplechannels.command.CommandResult;
+import me.martinitslinda.simplechannels.exception.CommandNotFoundException;
+import me.martinitslinda.simplechannels.exception.CommandPermissionsException;
+import me.martinitslinda.simplechannels.exception.CommandSenderException;
+import me.martinitslinda.simplechannels.exception.CommandUsageException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,31 +34,43 @@ import java.util.logging.Level;
 
 public class CommandManager{
 
+    //Variable declaration
     private List<ChannelCommand> commands=new ArrayList<>();
     private SimpleChannels plugin=SimpleChannels.get();
 
-    public boolean handle(CommandSender sender, String[] args) throws CommandException{
+    public CommandResult handle(CommandSender sender, String[] args) throws CommandPermissionsException, CommandUsageException, CommandNotFoundException, CommandSenderException{
 
-        if(args.length<1) throw new CommandException(null, "Correct usage: /sch <command>");
+        if(args.length<1) throw new CommandUsageException(null, "sch <command>");
 
+        //Retrieve the command (the first arg)
         String cmd=args[0];
+
+        //Get the command from command list
         ChannelCommand command=getCommand(cmd);
 
+        //If command is null (i.e not found) throw exception
         if(command==null) throw new CommandNotFoundException(null, "Cannot find command "+cmd);
 
+        //Create a new array with the length of the args they put (-1 for command)
         String[] newArgs=new String[args.length-1];
+
+        //Copy the array to the new array
         System.arraycopy(args, 1, newArgs, 0, newArgs.length);
 
+        //if the new args length is less than command min args, throw exception
         if(newArgs.length<command.getMinArgs())
-            throw new CommandUsageException(command, "Correct usage: /sch "+command.getUsage());
+            throw new CommandUsageException(command, "sch "+command.getUsage());
+
+        //if sender doesn't have the commands permission, throw exception
         if(!(sender.hasPermission(command.getPermission())))
-            throw new CommandPermissionsException(command, "You don't have permission to perform this command.");
+            throw new CommandPermissionsException(command, command.getPermission());
+
+        //If command isn't usable on console and sender isn't player, throw exception
         if(!(command.isConsole())&&!(sender instanceof Player))
             throw new CommandSenderException(command, "The console cannot perform this command.");
 
-        command.execute(sender, newArgs);
-
-        return true;
+        //execute command
+        return command.execute(sender, newArgs);
     }
 
     public List<ChannelCommand> getCommands(){

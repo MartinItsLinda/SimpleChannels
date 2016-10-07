@@ -15,26 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.martinitslinda.simplechannels.exception;
+package me.martinitslinda.simplechannels.channel;
 
-import me.martinitslinda.simplechannels.command.ChannelCommand;
+public enum Role{
 
-public class CommandException extends Exception{
+    USER("channel.chat"),
+    ADMINISTRATOR("channel.chat", "channel.invite", "channel.remove"),
+    CREATOR("channel.chat", "channel.invite", "channel.remove", "channel.promote");
 
-    private ChannelCommand command;
-    private String message;
+    private String[] permissions;
 
-    public CommandException(ChannelCommand command, String message){
-        this.command=command;
-        this.message=message;
+    Role(String... permissions){
+        this.permissions=permissions;
     }
 
-    public ChannelCommand getCommand(){
-        return command;
+    public String[] getPermissions(){
+        return permissions;
     }
 
-    @Override
-    public String getMessage(){
-        return message;
-    }
 }

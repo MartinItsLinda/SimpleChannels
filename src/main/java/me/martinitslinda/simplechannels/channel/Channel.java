@@ -17,7 +17,6 @@
 
 package me.martinitslinda.simplechannels.channel;
 
-import me.martinitslinda.simplechannels.channel.role.Role;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

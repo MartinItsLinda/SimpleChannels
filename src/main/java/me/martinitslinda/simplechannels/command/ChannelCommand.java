@@ -18,7 +18,6 @@
 package me.martinitslinda.simplechannels.command;
 
 import com.google.common.base.Preconditions;
-import me.martinitslinda.simplechannels.exception.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
@@ -84,6 +83,6 @@ public abstract class ChannelCommand{
         return isConsole;
     }
 
-    public abstract CommandResult execute(CommandSender sender, String[] args) throws CommandException;
+    public abstract CommandResult execute(CommandSender sender, String[] args);
 
 }

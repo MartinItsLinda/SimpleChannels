@@ -19,9 +19,22 @@ package me.martinitslinda.simplechannels.exception;
 
 import me.martinitslinda.simplechannels.command.ChannelCommand;
 
-public class CommandNotFoundException extends CommandException{
+public class CommandNotFoundException extends Exception{
+
+    private ChannelCommand command;
+    private String message;
 
     public CommandNotFoundException(ChannelCommand command, String message){
-        super(command, message);
+        this.command=command;
+        this.message=message;
+    }
+
+    public ChannelCommand getCommand(){
+        return command;
+    }
+
+    @Override
+    public String getMessage(){
+        return message;
     }
 }

@@ -19,7 +19,6 @@ package me.martinitslinda.simplechannels.channel;
 
 import com.google.common.base.Preconditions;
 import me.martinitslinda.simplechannels.SimpleChannels;
-import me.martinitslinda.simplechannels.channel.role.Role;
 import me.martinitslinda.simplechannels.event.ChannelBroadcastEvent;
 import me.martinitslinda.simplechannels.event.ChannelChatEvent;
 import org.bukkit.Bukkit;
@@ -47,15 +46,8 @@ public class SimpleChannel implements Channel{
     public SimpleChannel(String id, String name, String format, String broadcastFormat,
                          UUID creator, Map<UUID, Role> members, String permission){
 
-        Preconditions.checkNotNull(id, "id");
-        Preconditions.checkNotNull(name, "name");
-        Preconditions.checkNotNull(format, "format");
-        Preconditions.checkNotNull(broadcastFormat, "broadcastFormat");
-        Preconditions.checkNotNull(creator, "creator");
-        Preconditions.checkNotNull(members, "members");
-
         if(SimpleChannels.get().getChannelManager().getChannelById(id)!=null){
-            throw new IllegalArgumentException("Duplicate channel id '"+id+"'");
+            throw new IllegalArgumentException("Cannot have duplicate channel id's.");
         }
 
         this.id=id;
@@ -133,7 +125,7 @@ public class SimpleChannel implements Channel{
             if(player==null) continue;
 
             player.sendMessage(translateAlternateColorCodes('&',
-                    MessageFormat.format(getFormat(), getName(), event.getSender(), event.getMessage())));
+                    MessageFormat.format(event.getMessage(), getFormat(), getName(), event.getSender())));
 
         }
 
@@ -156,7 +148,7 @@ public class SimpleChannel implements Channel{
             if(player==null) continue;
 
             player.sendMessage(translateAlternateColorCodes('&',
-                    MessageFormat.format(getFormat(), getName(), event.getMessage())));
+                    MessageFormat.format(event.getMessage(), getFormat(), getName())));
         }
 
     }
@@ -176,8 +168,12 @@ public class SimpleChannel implements Channel{
     public String toString(){
         return "SimpleChannel{"+
                 "id='"+id+'\''+
-                ",creator="+creator+
-                ",name='"+name+'\''+
+                ", name='"+name+'\''+
+                ", format='"+format+'\''+
+                ", broadcastFormat='"+broadcastFormat+'\''+
+                ", creator="+creator+
+                ", members="+members+
+                ", permission='"+permission+'\''+
                 '}';
     }
 }

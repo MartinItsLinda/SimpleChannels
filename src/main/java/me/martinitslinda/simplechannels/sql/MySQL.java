@@ -30,8 +30,10 @@ public class MySQL{
 
     public static Connection getConnection() throws SQLException{
 
+        //If source isn't null and source isn't closed, return a connection from the pool
         if(source!=null&&!source.isClosed()) return source.getConnection();
 
+        //otherwise create a new pool
         source=new HikariDataSource();
         source.setJdbcUrl("jdbc:mysql://"+plugin.getConfig().getString("mysql.host")+
                 ":"+plugin.getConfig().getInt("mysql.port")+"/"+plugin.getConfig().getString("mysql.database"));
@@ -39,11 +41,14 @@ public class MySQL{
         source.setPassword(plugin.getConfig().getString("mysql.password"));
         source.setMaximumPoolSize(15);
 
+        //return a connection from the pool
         return source.getConnection();
     }
 
     public static void close(){
+        //if source isn't null and isn't closed
         if(source!=null&&!source.isClosed()){
+            //close pool
             source.close();
         }
     }

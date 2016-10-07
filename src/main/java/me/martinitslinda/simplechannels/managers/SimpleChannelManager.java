@@ -19,8 +19,8 @@ package me.martinitslinda.simplechannels.managers;
 
 import me.martinitslinda.simplechannels.SimpleChannels;
 import me.martinitslinda.simplechannels.channel.Channel;
+import me.martinitslinda.simplechannels.channel.Role;
 import me.martinitslinda.simplechannels.channel.SimpleChannel;
-import me.martinitslinda.simplechannels.channel.role.Role;
 import me.martinitslinda.simplechannels.sql.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -57,10 +57,12 @@ public class SimpleChannelManager implements ChannelManager{
                 try{
 
                     connection=MySQL.getConnection();
-                    stmt=connection.prepareStatement("SELECT *, COUNT(*) AS rowcount FROM `sch_channels`;");
+                    stmt=connection.prepareStatement("SELECT * FROM `sch_channels` WHERE `isActive`='1';");
                     set=stmt.executeQuery();
 
-                    plugin.getLogger().log(Level.INFO, "Downloading data of "+set.getString("rowcount")+" channels...");
+                    int rows=connection.prepareStatement("SELECT COUNT(*) AS rowcount FROM `sch_channels` WHERE `isActive`='1';").executeQuery().getInt("count");
+
+                    plugin.getLogger().log(Level.INFO, "Downloading data of "+rows+" channels...");
 
                     long startTime=System.currentTimeMillis();
 
@@ -83,12 +85,14 @@ public class SimpleChannelManager implements ChannelManager{
 
                         plugin.getLogger().log(Level.INFO, "Downloaded "+members.size()+" users.");
 
-                        SimpleChannel channel=new SimpleChannel(id, set.getString("name"), set.getString("messageFormat"),
+                        SimpleChannel channel=new SimpleChannel(id, set.getString("channel_name"), set.getString("messageFormat"),
                                 set.getString("broadcastFormat"), creator, members, set.getString("permission"));
 
                         plugin.getLogger().log(Level.INFO, "Registering channel...");
 
                         channels.add(channel);
+
+                        plugin.getLogger().log(Level.INFO, channel.getName()+" has been registered.");
 
 
                     }
