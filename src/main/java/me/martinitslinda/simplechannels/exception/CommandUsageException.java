@@ -22,19 +22,18 @@ import me.martinitslinda.simplechannels.command.ChannelCommand;
 public class CommandUsageException extends Exception{
 
     private ChannelCommand command;
-    private String message;
+    private String usage;
 
-    public CommandUsageException(ChannelCommand command, String message){
+    public CommandUsageException(ChannelCommand command, String usage){
         this.command=command;
-        this.message=message;
+        this.usage=usage;
     }
 
     public ChannelCommand getCommand(){
         return command;
     }
 
-    @Override
-    public String getMessage(){
-        return message;
+    public String getUsage(){
+        return usage;
     }
 }
