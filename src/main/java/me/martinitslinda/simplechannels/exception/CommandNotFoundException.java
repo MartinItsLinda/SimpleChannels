@@ -17,24 +17,16 @@
 
 package me.martinitslinda.simplechannels.exception;
 
-import me.martinitslinda.simplechannels.command.ChannelCommand;
-
 public class CommandNotFoundException extends Exception{
 
-    private ChannelCommand command;
-    private String message;
+    private String command;
 
-    public CommandNotFoundException(ChannelCommand command, String message){
+    public CommandNotFoundException(String command){
         this.command=command;
-        this.message=message;
     }
 
-    public ChannelCommand getCommand(){
+    public String getCommand(){
         return command;
     }
 
-    @Override
-    public String getMessage(){
-        return message;
-    }
 }

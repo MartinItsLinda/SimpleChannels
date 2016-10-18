@@ -49,7 +49,7 @@ public class CommandManager{
         ChannelCommand command=getCommand(cmd);
 
         //If command is null (i.e not found) throw exception
-        if(command==null) throw new CommandNotFoundException(null, "Cannot find command "+cmd);
+        if(command==null) throw new CommandNotFoundException(cmd);
 
         //Create a new array with the length of the args they put (-1 for command)
         String[] newArgs=new String[args.length-1];
