@@ -18,162 +18,199 @@
 package me.martinitslinda.simplechannels.channel;
 
 import com.google.common.base.Preconditions;
+
 import me.martinitslinda.simplechannels.SimpleChannels;
 import me.martinitslinda.simplechannels.event.ChannelBroadcastEvent;
 import me.martinitslinda.simplechannels.event.ChannelChatEvent;
+import me.martinitslinda.simplechannels.event.ChannelPlayerInviteEvent;
+import me.martinitslinda.simplechannels.managers.RequestManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
-
-public class SimpleChannel implements Channel{
+public class SimpleChannel implements Channel {
 
     private String id;
     private String name;
-    private String format;
-    private String broadcastFormat;
-    private UUID creator;
-    private Map<UUID, Role> members;
+    private UUID creatorUUID;
+    private Set<UUID> members;
     private String permission;
 
-    public SimpleChannel(String id, String name, String format, String broadcastFormat,
-                         UUID creator, Map<UUID, Role> members, String permission){
+    public SimpleChannel(String id, String name, UUID creatorUUID, Set<UUID> members, String permission) {
 
-        if(SimpleChannels.get().getChannelManager().getChannelById(id)!=null){
+        if (SimpleChannels.get().getChannelManager().getChannelById(id) != null) {
             throw new IllegalArgumentException("Cannot have duplicate channel id's.");
         }
 
-        this.id=id;
-        this.name=name;
-        this.format=format;
-        this.broadcastFormat=broadcastFormat;
-        this.creator=creator;
-        this.members=members;
-        this.permission=permission;
+        this.id = id;
+        this.name = name;
+        this.creatorUUID = creatorUUID;
+        this.members = members;
+        this.permission = permission;
     }
 
     @Override
-    public String getId(){
+    public String getId() {
         return id;
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return name;
     }
 
     @Override
-    public UUID getCreator(){
-        return creator;
+    public UUID getCreatorUUID() {
+        return creatorUUID;
     }
 
     @Override
-    public Map<UUID, Role> getMembers(){
-        return new HashMap<>(members);
+    public Set<UUID> getMembers() {
+        return new HashSet<>(members);
     }
 
     @Override
-    public String getFormat(){
-        return format;
-    }
-
-    @Override
-    public void setFormat(String format){
-        this.format=format;
-    }
-
-    @Override
-    public String getBroadcastFormat(){
-        return broadcastFormat;
-    }
-
-    @Override
-    public void setBroadcastFormat(String broadcastFormat){
-        this.broadcastFormat=broadcastFormat;
-    }
-
-    @Override
-    public String getPermission(){
+    public String getPermission() {
         return permission;
     }
 
     @Override
-    public void sendMessage(CommandSender sender, String message){
+    public void sendMessage(Player sender, String message) {
 
         Preconditions.checkNotNull(sender, "sender");
         Preconditions.checkNotNull(message, "message");
         Preconditions.checkArgument(!(message.isEmpty()), "message empty");
 
-        message=ChatColor.stripColor(message);
+        message = ChatColor.stripColor(message);
 
-        ChannelChatEvent event=new ChannelChatEvent(this, sender, message, getMembers());
+        ChannelChatEvent event = new ChannelChatEvent(this, sender, message, getMembers());
 
         Bukkit.getPluginManager().callEvent(event);
 
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
 
-        for(UUID recipient : event.getRecipients().keySet()){
-            Player player=Bukkit.getPlayer(recipient);
+        for (UUID recipient : event.getRecipients()) {
+            Player player = Bukkit.getPlayer(recipient);
 
-            if(player==null) continue;
+            if (player == null) continue;
 
-            player.sendMessage(translateAlternateColorCodes('&',
-                    MessageFormat.format(event.getMessage(), getFormat(), getName(), event.getSender())));
+            String response = ChatColor.translateAlternateColorCodes('&', "&6{player}: {message}");
+            response = response.replace("{player}", sender.getName());
+            response = response.replace("{message}", message);
+            player.sendMessage(response);
 
         }
 
     }
 
     @Override
-    public void broadcast(String message){
+    public void broadcast(String message) {
 
         Preconditions.checkNotNull(message, "message");
         Preconditions.checkArgument(!(message.isEmpty()), "message empty");
 
-        ChannelBroadcastEvent event=new ChannelBroadcastEvent(this, message);
+        ChannelBroadcastEvent event = new ChannelBroadcastEvent(this, message);
 
         Bukkit.getPluginManager().callEvent(event);
-        if(event.isCancelled()) return;
 
-        for(UUID recipient : getMembers().keySet()){
-            Player player=Bukkit.getPlayer(recipient);
+        String broadcastMessage = ChatColor.translateAlternateColorCodes('&',
+                "&e{channel} | {message}");
+        broadcastMessage = broadcastMessage.replace("{channel}", getName());
+        broadcastMessage = broadcastMessage.replace("{message}", message);
 
-            if(player==null) continue;
+        for (UUID recipient : getMembers()) {
+            Player player = Bukkit.getPlayer(recipient);
 
-            player.sendMessage(translateAlternateColorCodes('&',
-                    MessageFormat.format(event.getMessage(), getFormat(), getName())));
+            if (player == null) continue;
+
+            player.sendMessage(broadcastMessage);
         }
 
     }
 
     @Override
-    public void add(Player player){
-        if(!(members.containsKey(Preconditions.checkNotNull(player).getUniqueId())))
-            members.put(player.getUniqueId(), Role.USER);
+    public boolean isMember(Player player) {
+        Preconditions.checkNotNull(player, "player");
+        for (UUID uuid : members) {
+            if (uuid.equals(player.getUniqueId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    public void remove(Player player){
-        if(members.containsKey(Preconditions.checkNotNull(player).getUniqueId())) members.remove(player.getUniqueId());
+    public void add(UUID uuid) {
+        if (!(members.contains(uuid)))
+            members.add(uuid);
     }
 
     @Override
-    public String toString(){
-        return "SimpleChannel{"+
-                "id='"+id+'\''+
-                ", name='"+name+'\''+
-                ", format='"+format+'\''+
-                ", broadcastFormat='"+broadcastFormat+'\''+
-                ", creator="+creator+
-                ", members="+members+
-                ", permission='"+permission+'\''+
-                '}';
+    public void remove(UUID uuid) {
+        if (members.contains(uuid))
+            members.remove(uuid);
     }
+
+    @Override
+    public boolean isAdministrator(Player player) {
+        return player.getUniqueId().equals(creatorUUID);
+    }
+
+    @Override
+    public void invite(Player sender, Player target) {
+
+        Preconditions.checkNotNull(sender, "sender");
+        Preconditions.checkNotNull(target, "target");
+
+        if (!isAdministrator(sender)) {
+            String reply = ChatColor.translateAlternateColorCodes('&', "&cYou must be at least an Administrator " +
+                    "or above to invite people into this channel.");
+            sender.sendMessage(reply);
+            return;
+        }
+
+        if (isMember(target)) {
+            String reply = ChatColor.translateAlternateColorCodes('&',
+                    "&c{player} is already a member of this channel.");
+            reply = reply.replace("{player}", target.getName());
+            sender.sendMessage(reply);
+            return;
+        }
+
+        RequestManager requestManager = SimpleChannels.get().getRequestManager();
+
+        if (requestManager.hasRequestTo(target.getUniqueId(), this)) {
+            String response = ChatColor.translateAlternateColorCodes('&',
+                    "&c{player} already has a pending invite from {channel}");
+            response = response.replace("{player}", target.getName());
+            response = response.replace("{channel}", getName());
+            sender.sendMessage(response);
+            return;
+        }
+
+        ChannelPlayerInviteEvent event = new ChannelPlayerInviteEvent(sender, target, getMembers(), this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        requestManager.sendRequestTo(target, this);
+
+        for (UUID recipient : event.getRecipients()) {
+            Player player = Bukkit.getPlayer(recipient);
+
+            if (player == null) continue;
+
+            String response = ChatColor.translateAlternateColorCodes('&', "&a{sender} has invited {target} to " +
+                    "join {channel}");
+            response = response.replace("{sender}", sender.getName());
+            response = response.replace("{target}", target.getName());
+            response = response.replace("{channel}", getName());
+
+            player.sendMessage(response);
+
+        }
+
+    }
+
 }

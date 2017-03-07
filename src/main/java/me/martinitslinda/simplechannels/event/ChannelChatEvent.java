@@ -23,45 +23,46 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-public class ChannelChatEvent extends ChannelEvent implements Cancellable{
+public class ChannelChatEvent extends ChannelEvent implements Cancellable {
 
     private CommandSender sender;
     private String message;
-    private Map<UUID, Role> recipients;
+    private Set<UUID> recipients;
     private boolean cancelled;
 
-    public ChannelChatEvent(Channel channel, CommandSender sender, String message, Map<UUID, Role> recipients){
+    public ChannelChatEvent(Channel channel, CommandSender sender, String message, Set<UUID> recipients) {
         super(channel);
-        this.sender=sender;
-        this.message=message;
-        this.recipients=recipients;
+        this.sender = sender;
+        this.message = message;
+        this.recipients = recipients;
     }
 
-    public CommandSender getSender(){
+    public CommandSender getSender() {
         return sender;
     }
 
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message){
-        this.message=message;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public Map<UUID, Role> getRecipients(){
+    public Set<UUID> getRecipients() {
         return recipients;
     }
 
     @Override
-    public boolean isCancelled(){
+    public boolean isCancelled() {
         return cancelled;
     }
 
     @Override
-    public void setCancelled(boolean cancelled){
-        this.cancelled=cancelled;
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 }

@@ -17,7 +17,7 @@
 
 package me.martinitslinda.simplechannels.util;
 
-public class Util{
+public class Util {
 
 
 }

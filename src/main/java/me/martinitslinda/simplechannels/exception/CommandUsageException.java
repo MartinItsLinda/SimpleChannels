@@ -19,21 +19,21 @@ package me.martinitslinda.simplechannels.exception;
 
 import me.martinitslinda.simplechannels.command.ChannelCommand;
 
-public class CommandUsageException extends Exception{
+public class CommandUsageException extends Exception {
 
     private ChannelCommand command;
     private String usage;
 
-    public CommandUsageException(ChannelCommand command, String usage){
-        this.command=command;
-        this.usage=usage;
+    public CommandUsageException(ChannelCommand command, String usage) {
+        this.command = command;
+        this.usage = usage;
     }
 
-    public ChannelCommand getCommand(){
+    public ChannelCommand getCommand() {
         return command;
     }
 
-    public String getUsage(){
+    public String getUsage() {
         return usage;
     }
 }

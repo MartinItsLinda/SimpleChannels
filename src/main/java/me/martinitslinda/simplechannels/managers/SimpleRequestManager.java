@@ -17,44 +17,52 @@
 
 package me.martinitslinda.simplechannels.managers;
 
+import com.google.common.base.Preconditions;
 import me.martinitslinda.simplechannels.channel.Channel;
 import me.martinitslinda.simplechannels.request.Request;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SimpleRequestManager implements RequestManager{
+public class SimpleRequestManager implements RequestManager {
 
-    private List<Request> requests=new ArrayList<>();
+    private List<Request> requests = new ArrayList<>();
 
     @Override
-    public List<Request> getRequests(){
+    public List<Request> getRequests() {
         return null;
     }
 
     @Override
-    public Request.Result hasRequestTo(Channel sender, UUID recipient){
+    public boolean hasRequestTo(UUID uuid, Channel channel) {
+        return false;
+    }
+
+    @Override
+    public Request getRequestFrom(Channel sender, UUID recipient) {
         return null;
     }
 
     @Override
-    public Request getRequestFrom(Channel sender, UUID recipient){
-        return null;
-    }
+    public Request sendRequestTo(Player target, Channel sender) {
+        Preconditions.checkNotNull(target, "target");
+        Preconditions.checkNotNull(sender, "sender");
 
-    @Override
-    public Request getRequestTo(UUID recipient){
-        return null;
-    }
+        if(hasRequestTo(target.getUniqueId(), sender))
+            throw new IllegalArgumentException(target.getName()+" already has a request pending from " +
+                    ""+sender.getName()+".");
 
-    @Override
-    public List<Request> getRequestsFrom(Channel sender){
-        return null;
-    }
+        String message = ChatColor.translateAlternateColorCodes('&',
+                "You have been invited to join {channel}.");
+        message = message.replace("{channel}", sender.getName());
+        target.sendMessage(message);
 
-    @Override
-    public List<Request> getRequestsTo(UUID recipient){
-        return null;
+        Request request = new Request(sender, target.getUniqueId());
+        requests.add(request);
+
+        return request;
     }
 }

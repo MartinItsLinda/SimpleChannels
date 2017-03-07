@@ -22,6 +22,7 @@ import me.martinitslinda.simplechannels.channel.Channel;
 import me.martinitslinda.simplechannels.channel.Role;
 import me.martinitslinda.simplechannels.channel.SimpleChannel;
 import me.martinitslinda.simplechannels.sql.MySQL;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -29,126 +30,115 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.*;
 import java.util.logging.Level;
 
-public class SimpleChannelManager implements ChannelManager{
+public class SimpleChannelManager implements ChannelManager {
 
-    private List<Channel> channels=new ArrayList<>();
-    private Map<String, Channel> playerChannel=new HashMap<>();
-    private SimpleChannels plugin=SimpleChannels.get();
+    private List<Channel> channels = new ArrayList<>();
+    private Map<String, Channel> playerChannel = new HashMap<>();
+    private SimpleChannels plugin = SimpleChannels.get();
 
     @Override
-    public void downloadChannels(){
+    public synchronized void downloadChannels() {
 
         channels.clear();
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
-            public void run(){
+            public void run() {
 
-                Connection connection=null;
-                PreparedStatement stmt=null;
-                ResultSet set=null;
+                Connection connection = null;
+                PreparedStatement stmt = null;
+                ResultSet set = null;
 
-                PreparedStatement memberStmt=null;
-                ResultSet memberSet=null;
+                PreparedStatement memberStmt = null;
+                ResultSet memberSet = null;
 
-                try{
+                try {
 
-                    connection=MySQL.getConnection();
-                    stmt=connection.prepareStatement("SELECT * FROM `sch_channels` WHERE `isActive`='1';");
-                    set=stmt.executeQuery();
+                    connection = MySQL.getConnection();
+                    stmt = connection.prepareStatement("SELECT * FROM `sch_channels`;");
+                    set = stmt.executeQuery();
 
-                    int rows=connection.prepareStatement("SELECT COUNT(*) AS rowcount FROM `sch_channels` WHERE `isActive`='1';").executeQuery().getInt("count");
+                    int rows = connection.prepareStatement("SELECT COUNT(*) FROM `sch_channels`;").executeQuery().getInt("count");
 
-                    plugin.getLogger().log(Level.INFO, "Downloading data of "+rows+" channels...");
+                    plugin.getLogger().log(Level.INFO, "Downloading data of " + rows + " channels...");
 
-                    long startTime=System.currentTimeMillis();
+                    long startTime = System.currentTimeMillis();
 
-                    while(set.next()){
+                    while (set.next()) {
+                        String id = set.getString("channel_id");
+                        String channelName = set.getString("channelName");
+                        UUID creatorUUID = UUID.fromString(set.getString("creator"));
 
-                        String id=set.getString("channel_id");
-                        UUID creator=UUID.fromString(set.getString("creator"));
+                        plugin.getLogger().log(Level.INFO, "Downloading membership data for channel id '" + id + "'("+channelName+")...");
+                        Set<UUID> members = new HashSet<>();
 
-                        memberStmt=connection.prepareStatement("SELECT * FROM `sch_channels_members` WHERE `channel_id`=?");
+                        memberStmt = connection.prepareStatement("SELECT * FROM `sch_channels_members` WHERE `channel_id`=?");
                         memberStmt.setString(1, id);
-                        memberSet=memberStmt.executeQuery();
+                        memberSet = memberStmt.executeQuery();
 
-                        Map<UUID, Role> members=new HashMap<>();
+                        while (memberSet.next()) members.add(UUID.fromString(set.getString("uuid")));
 
-                        plugin.getLogger().log(Level.INFO, "Downloading membership data for channel id '"+id+"'...");
+                        plugin.getLogger().log(Level.INFO, "Downloaded " + members.size() + " users.");
 
-                        while(memberSet.next()){
-                            members.put(UUID.fromString(set.getString("uuid")), Role.valueOf(set.getString("role")));
-                        }
+                        SimpleChannel channel = new SimpleChannel(id, channelName, creatorUUID, members,
+                                set.getString("permission"));
 
-                        plugin.getLogger().log(Level.INFO, "Downloaded "+members.size()+" users.");
-
-                        SimpleChannel channel=new SimpleChannel(id, set.getString("channel_name"), set.getString("messageFormat"),
-                                set.getString("broadcastFormat"), creator, members, set.getString("permission"));
-
-                        plugin.getLogger().log(Level.INFO, "Registering channel...");
+                        plugin.getLogger().log(Level.INFO, "Registering channel \""+channelName+"\"...");
 
                         channels.add(channel);
 
-                        plugin.getLogger().log(Level.INFO, channel.getName()+" has been registered.");
-
-
+                        plugin.getLogger().log(Level.INFO, channelName + " has been registered.");
                     }
 
-                    long endTime=System.currentTimeMillis();
-                    long totalTime=(endTime-startTime);
+                    long endTime = System.currentTimeMillis();
+                    long totalTime = (endTime - startTime);
 
-                    plugin.getLogger().log(Level.INFO, "Download complete. Took "+totalTime+"ms.");
+                    plugin.getLogger().log(Level.INFO, "Download complete. Took " + totalTime + "ms.");
 
-                }
-                catch(SQLException e){
+                } catch (SQLException e) {
                     e.printStackTrace();
-                }
-                finally{
+                } finally {
 
-                    if(set!=null){
-                        try{
+                    if (set != null) {
+                        try {
                             set.close();
-                        }
-                        catch(SQLException e){
+                        } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    if(memberSet!=null){
-                        try{
+                    if (memberSet != null) {
+                        try {
                             memberSet.close();
-                        }
-                        catch(SQLException e){
+                        } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    if(stmt!=null){
-                        try{
+                    if (stmt != null) {
+                        try {
                             stmt.close();
-                        }
-                        catch(SQLException e){
+                        } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    if(memberStmt!=null){
-                        try{
+                    if (memberStmt != null) {
+                        try {
                             memberStmt.close();
-                        }
-                        catch(SQLException e){
+                        } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    if(connection!=null){
-                        try{
+                    if (connection != null) {
+                        try {
                             connection.close();
-                        }
-                        catch(SQLException e){
+                        } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
@@ -161,17 +151,29 @@ public class SimpleChannelManager implements ChannelManager{
     }
 
     @Override
-    public List<Channel> getChannels(){
+    public List<Channel> getChannels() {
         return new ArrayList<>(channels);
     }
 
     @Override
-    public Collection<Channel> getChannels(Player player){
+    public List<Channel> getOwnedChannels(Player player) {
 
-        List<Channel> channels=new ArrayList<>();
+        List<Channel> channels = new ArrayList<>();
 
-        for(Channel channel : getChannels()){
-            if(channel.getMembers().containsKey(player.getUniqueId())){
+        for(Channel channel : getChannels(player)) {
+            if(channel.getCreatorUUID().equals(player.getUniqueId())) channels.add(channel);
+        }
+
+        return channels;
+    }
+
+    @Override
+    public List<Channel> getChannels(Player player) {
+
+        List<Channel> channels = new ArrayList<>();
+
+        for (Channel channel : getChannels()) {
+            if (channel.getMembers().contains(player.getUniqueId())) {
                 channels.add(channel);
             }
         }
@@ -180,9 +182,9 @@ public class SimpleChannelManager implements ChannelManager{
     }
 
     @Override
-    public Channel getChannelByName(String name){
-        for(Channel channel : getChannels()){
-            if(channel.getName().equalsIgnoreCase(name)){
+    public Channel getChannelByName(String name) {
+        for (Channel channel : getChannels()) {
+            if (channel.getName().equalsIgnoreCase(name)) {
                 return channel;
             }
         }
@@ -190,9 +192,9 @@ public class SimpleChannelManager implements ChannelManager{
     }
 
     @Override
-    public Channel getChannelById(String id){
-        for(Channel channel : getChannels()){
-            if(channel.getId().equals(id)){
+    public Channel getChannelById(String id) {
+        for (Channel channel : getChannels()) {
+            if (channel.getId().equals(id)) {
                 return channel;
             }
         }
@@ -200,12 +202,12 @@ public class SimpleChannelManager implements ChannelManager{
     }
 
     @Override
-    public Channel getActiveChannel(Player player){
+    public Channel getActiveChannel(Player player) {
         return playerChannel.get(player.getName());
     }
 
     @Override
-    public Channel setActiveChannel(Player player, Channel channel){
+    public Channel setActiveChannel(Player player, Channel channel) {
         return playerChannel.put(player.getName(), channel);
     }
 

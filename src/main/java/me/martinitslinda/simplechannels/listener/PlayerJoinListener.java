@@ -23,14 +23,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class PlayerJoinListener implements Listener{
+public class PlayerJoinListener implements Listener {
 
-    private SimpleChannels plugin=SimpleChannels.get();
+    private SimpleChannels plugin = SimpleChannels.get();
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event){
+    public void onJoin(PlayerJoinEvent event) {
 
-        Player player=event.getPlayer();
+        Player player = event.getPlayer();
 
 
     }

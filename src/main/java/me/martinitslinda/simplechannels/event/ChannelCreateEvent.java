@@ -20,16 +20,16 @@ package me.martinitslinda.simplechannels.event;
 import me.martinitslinda.simplechannels.channel.Channel;
 import org.bukkit.command.CommandSender;
 
-public class ChannelCreateEvent extends ChannelEvent{
+public class ChannelCreateEvent extends ChannelEvent {
 
     private CommandSender creator;
 
-    public ChannelCreateEvent(Channel channel, CommandSender creator){
+    public ChannelCreateEvent(Channel channel, CommandSender creator) {
         super(channel);
-        this.creator=creator;
+        this.creator = creator;
     }
 
-    public CommandSender getCreator(){
+    public CommandSender getCreator() {
         return creator;
     }
 

@@ -18,71 +18,76 @@
 package me.martinitslinda.simplechannels.command;
 
 import com.google.common.base.Preconditions;
-import org.bukkit.command.CommandSender;
+import me.martinitslinda.simplechannels.SimpleChannels;
+import me.martinitslinda.simplechannels.managers.ChannelManager;
+import me.martinitslinda.simplechannels.managers.CommandManager;
 import org.bukkit.permissions.Permission;
 
-public abstract class ChannelCommand{
+public abstract class ChannelCommand {
 
     private String name;
-    private Permission permission;
     private String usage;
+    private Permission permission;
     private String description;
-    private int minArgs;
-    private boolean isConsole;
+    private SimpleChannels plugin;
+    private CommandManager commandManager;
+    private ChannelManager channelManager;
 
-    public ChannelCommand(String name, String permission){
-        this(name, permission, null, null, 0, false);
-    }
-
-    public ChannelCommand(String name, String permission, String usage){
-        this(name, permission, usage, null, 0, false);
-    }
-
-    public ChannelCommand(String name, String permission, String usage, String description){
-        this(name, permission, usage, description, 0, false);
-    }
-
-    public ChannelCommand(String name, String permission, String usage, String description, int minArgs){
-        this(name, permission, usage, description, minArgs, false);
-    }
-
-    public ChannelCommand(String name, String permission, String usage, String description, int minArgs, boolean isConsole){
-
+    public ChannelCommand(String name, String usage, String description) {
         Preconditions.checkNotNull(name, "name");
-        Preconditions.checkNotNull(permission, "permission");
-
-        this.name=name;
-        this.permission=new Permission(permission);
-        this.usage=usage;
-        this.description=description;
-        this.minArgs=minArgs;
-        this.isConsole=isConsole;
+        this.name = name;
+        this.usage = usage;
+        this.permission = new Permission("simplechannels.command."+name);
+        this.description = description;
+        this.plugin = SimpleChannels.get();
+        this.commandManager = plugin.getCommandManager();
+        this.channelManager = plugin.getChannelManager();
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public Permission getPermission(){
-        return permission;
-    }
-
-    public String getUsage(){
+    public String getUsage() {
         return usage;
     }
 
-    public String getDescription(){
+    public boolean hasUsageMessage() {
+        return getUsage() != null && getUsage().length() > 0;
+    }
+
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public String getDescription() {
         return description;
     }
 
-    public int getMinArgs(){
-        return minArgs;
+    public boolean hasDescription() {
+        return getDescription() != null && getDescription().length() > 0;
     }
 
-    public boolean isConsole(){
-        return isConsole;
+    public SimpleChannels getPlugin() {
+        return plugin;
     }
 
-    public abstract CommandResult execute(CommandSender sender, String[] args);
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public void register() {
+        getCommandManager().registerCommand(this);
+    }
+
+    public void unregister() {
+        getCommandManager().unregisterCommand(this);
+    }
+
+    public abstract void execute(CommandRequest request);
 
 }

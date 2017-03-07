@@ -18,17 +18,20 @@
 package me.martinitslinda.simplechannels.managers;
 
 import me.martinitslinda.simplechannels.channel.Channel;
+
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface ChannelManager{
+public interface ChannelManager {
 
     void downloadChannels();
 
-    Collection<Channel> getChannels();
+    List<Channel> getChannels();
 
-    Collection<Channel> getChannels(Player player);
+    List<Channel> getChannels(Player player);
+
+    List<Channel> getOwnedChannels(Player player);
 
     Channel getChannelByName(String name);
 

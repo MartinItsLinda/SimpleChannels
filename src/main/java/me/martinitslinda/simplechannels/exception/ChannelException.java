@@ -17,16 +17,24 @@
 
 package me.martinitslinda.simplechannels.exception;
 
-public class ChannelException extends Exception{
+import me.martinitslinda.simplechannels.channel.Channel;
 
+public class ChannelException extends Exception {
+
+    private Channel channel;
     private String message;
 
-    public ChannelException(String message){
-        this.message=message;
+    public ChannelException(Channel channel, String message) {
+        this.channel = channel;
+        this.message = message;
+    }
+
+    public Channel getChannel() {
+        return channel;
     }
 
     @Override
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 }

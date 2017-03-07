@@ -21,26 +21,26 @@ import me.martinitslinda.simplechannels.channel.Channel;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class ChannelEvent extends Event{
+public class ChannelEvent extends Event {
 
-    private static final HandlerList handlers=new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
     private Channel channel;
 
-    public ChannelEvent(Channel channel){
-        this.channel=channel;
+    public ChannelEvent(Channel channel) {
+        this.channel = channel;
     }
 
-    public static HandlerList getHandlerList(){
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public Channel getChannel(){
+    public Channel getChannel() {
         return channel;
     }
 
     @Override
-    public HandlerList getHandlers(){
+    public HandlerList getHandlers() {
         return handlers;
     }
 

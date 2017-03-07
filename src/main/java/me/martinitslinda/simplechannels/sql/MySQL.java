@@ -23,20 +23,20 @@ import me.martinitslinda.simplechannels.SimpleChannels;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class MySQL{
+public class MySQL {
 
     private static HikariDataSource source;
-    private static SimpleChannels plugin=SimpleChannels.get();
+    private static SimpleChannels plugin = SimpleChannels.get();
 
-    public static Connection getConnection() throws SQLException{
+    public static Connection getConnection() throws SQLException {
 
         //If source isn't null and source isn't closed, return a connection from the pool
-        if(source!=null&&!source.isClosed()) return source.getConnection();
+        if (source != null && !source.isClosed()) return source.getConnection();
 
         //otherwise create a new pool
-        source=new HikariDataSource();
-        source.setJdbcUrl("jdbc:mysql://"+plugin.getConfig().getString("mysql.host")+
-                ":"+plugin.getConfig().getInt("mysql.port")+"/"+plugin.getConfig().getString("mysql.database"));
+        source = new HikariDataSource();
+        source.setJdbcUrl("jdbc:mysql://" + plugin.getConfig().getString("mysql.host") +
+                ":" + plugin.getConfig().getInt("mysql.port") + "/" + plugin.getConfig().getString("mysql.database"));
         source.setUsername(plugin.getConfig().getString("mysql.username"));
         source.setPassword(plugin.getConfig().getString("mysql.password"));
         source.setMaximumPoolSize(15);
@@ -45,10 +45,9 @@ public class MySQL{
         return source.getConnection();
     }
 
-    public static void close(){
+    public static void close() {
         //if source isn't null and isn't closed
-        if(source!=null&&!source.isClosed()){
-            //close pool
+        if (source != null && !source.isClosed()) {
             source.close();
         }
     }

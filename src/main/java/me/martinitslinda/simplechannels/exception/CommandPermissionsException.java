@@ -20,21 +20,21 @@ package me.martinitslinda.simplechannels.exception;
 import me.martinitslinda.simplechannels.command.ChannelCommand;
 import org.bukkit.permissions.Permission;
 
-public class CommandPermissionsException extends Exception{
+public class CommandPermissionsException extends Exception {
 
     private ChannelCommand command;
     private Permission permission;
 
-    public CommandPermissionsException(ChannelCommand command, Permission permission){
-        this.command=command;
-        this.permission=permission;
+    public CommandPermissionsException(ChannelCommand command, Permission permission) {
+        this.command = command;
+        this.permission = permission;
     }
 
-    public ChannelCommand getCommand(){
+    public ChannelCommand getCommand() {
         return command;
     }
 
-    public Permission getPermission(){
+    public Permission getPermission() {
         return permission;
     }
 }

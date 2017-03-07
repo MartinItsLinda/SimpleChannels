@@ -20,26 +20,17 @@ package me.martinitslinda.simplechannels.event;
 import me.martinitslinda.simplechannels.channel.Channel;
 import org.bukkit.event.Cancellable;
 
-public class ChannelBroadcastEvent extends ChannelEvent implements Cancellable{
+public class ChannelBroadcastEvent extends ChannelEvent {
 
     private String message;
     private boolean isCancelled;
 
-    public ChannelBroadcastEvent(Channel channel, String message){
+    public ChannelBroadcastEvent(Channel channel, String message) {
         super(channel);
     }
 
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 
-    @Override
-    public boolean isCancelled(){
-        return isCancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean cancelled){
-        isCancelled=cancelled;
-    }
 }

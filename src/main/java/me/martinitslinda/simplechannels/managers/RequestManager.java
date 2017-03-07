@@ -19,22 +19,19 @@ package me.martinitslinda.simplechannels.managers;
 
 import me.martinitslinda.simplechannels.channel.Channel;
 import me.martinitslinda.simplechannels.request.Request;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface RequestManager{
+public interface RequestManager {
 
     List<Request> getRequests();
 
-    Request.Result hasRequestTo(Channel sender, UUID recipient);
+    boolean hasRequestTo(UUID uuid, Channel channel);
 
-    Request getRequestFrom(Channel sender, UUID recipient);
+    Request getRequestFrom(Channel channel, UUID uuid);
 
-    Request getRequestTo(UUID recipient);
-
-    List<Request> getRequestsFrom(Channel sender);
-
-    List<Request> getRequestsTo(UUID recipient);
+    Request sendRequestTo(Player target, Channel sender);
 
 }

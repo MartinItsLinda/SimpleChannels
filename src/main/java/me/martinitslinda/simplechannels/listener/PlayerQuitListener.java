@@ -23,14 +23,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerQuitListener implements Listener{
+public class PlayerQuitListener implements Listener {
 
-    private SimpleChannels plugin=SimpleChannels.get();
+    private SimpleChannels plugin = SimpleChannels.get();
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event){
+    public void onQuit(PlayerQuitEvent event) {
 
-        Player player=event.getPlayer();
+        Player player = event.getPlayer();
 
     }
 

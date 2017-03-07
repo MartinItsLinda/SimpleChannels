@@ -17,39 +17,36 @@
 
 package me.martinitslinda.simplechannels.channel;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-public interface Channel{
+public interface Channel {
 
     String getId();
 
     String getName();
 
-    UUID getCreator();
+    UUID getCreatorUUID();
 
-    Map<UUID, Role> getMembers();
-
-    String getFormat();
-
-    void setFormat(String format);
-
-    String getBroadcastFormat();
-
-    void setBroadcastFormat(String broadcastFormat);
+    Set<UUID> getMembers();
 
     String getPermission();
 
-    void sendMessage(CommandSender sender, String message);
+    void sendMessage(Player sender, String message);
 
     void broadcast(String message);
 
-    void add(Player player);
+    boolean isMember(Player player);
 
-    void remove(Player player);
+    void add(UUID uuid);
+
+    void remove(UUID uuid);
+
+    boolean isAdministrator(Player player);
+
+    void invite(Player sender, Player target);
 
 }
 

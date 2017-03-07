@@ -21,33 +21,35 @@ import me.martinitslinda.simplechannels.channel.Channel;
 
 import java.util.UUID;
 
-public class Request{
+public class Request {
 
     private Channel sender;
     private UUID recipient;
     private long requestTime;
 
-    public Request(Channel sender, UUID recipient){
-        this.sender=sender;
-        this.recipient=recipient;
-        this.requestTime=System.currentTimeMillis();
+    public Request(Channel sender, UUID recipient) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.requestTime = System.currentTimeMillis();
     }
 
-    public Channel getSender(){
+    public Channel getSender() {
         return sender;
     }
 
-    public UUID getRecipient(){
+    public UUID getRecipient() {
         return recipient;
     }
 
-    public long getRequestTime(){
+    public long getRequestTime() {
         return requestTime;
     }
 
-    public boolean hasExpired(){ return getRequestTime()+30000L-System.currentTimeMillis()<=0; }
+    public boolean hasExpired() {
+        return getRequestTime() + 30000L - System.currentTimeMillis() <= 0;
+    }
 
-    public enum Result{
+    public enum Result {
 
         SUCCESS, FAILURE, PLAYER_HAS_REQUEST, NOT_FOUND, TIMED_OUT, FOUND
 

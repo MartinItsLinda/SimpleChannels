@@ -17,16 +17,16 @@
 
 package me.martinitslinda.simplechannels.exception;
 
-public class CommandNotFoundException extends Exception{
+public class CommandNotFoundException extends Exception {
 
-    private String command;
+    private String commandName;
 
-    public CommandNotFoundException(String command){
-        this.command=command;
+    public CommandNotFoundException(String commandName) {
+        this.commandName = commandName;
     }
 
-    public String getCommand(){
-        return command;
+    public String getCommandName() {
+        return commandName;
     }
 
 }

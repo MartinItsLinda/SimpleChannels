@@ -17,7 +17,7 @@
 
 package me.martinitslinda.simplechannels.channel;
 
-public enum Role{
+public enum Role {
 
     USER("channel.chat"),
     ADMINISTRATOR("channel.chat", "channel.invite", "channel.remove"),
@@ -25,11 +25,11 @@ public enum Role{
 
     private String[] permissions;
 
-    Role(String... permissions){
-        this.permissions=permissions;
+    Role(String... permissions) {
+        this.permissions = permissions;
     }
 
-    public String[] getPermissions(){
+    public String[] getPermissions() {
         return permissions;
     }
 
